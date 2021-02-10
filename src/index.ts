@@ -1,10 +1,10 @@
-import { ColumnConfig } from './models/Interfaces';
+import { ColumnConfig, ColumnField } from './models/Interfaces';
 import { isFunction } from './utilities/utilities.js';
 export default class Table {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
   data: any[]; //Data displated in column
   
-  tableArray: string[][] = [];
+  tableArray: ColumnField[][] = [];
 
   constructor(columnsConfig: ColumnConfig[], data: any[]) {
     this.columnsConfig = columnsConfig;
@@ -15,51 +15,53 @@ export default class Table {
 
   /*
     Prepares data ready to be mapped to table element;
-    sets 2D array of string with columns and rows of table data;
+    sets 2D array of ColumnField with columns and rows of table data;
 
     Data is formated with provided functions;
     if no function formater is provided by end user saves raw data;
   */
-  formatNewData(columnsConfig: ColumnConfig[], data: any[]): string[][] {
-    const headers : string[] = this.getTableHeaderNames(columnsConfig);// array with column names;
-    const table: string[][] = []; //Temp variable with 2d array of rows and columns data
+  formatNewData(columnsConfig: ColumnConfig[], data: any[]): ColumnField[][] {
+    const headers : ColumnField[] = this.getTableHeaderNames(columnsConfig);// array with column names;
+    const table: ColumnField[][] = []; //Temp variable with 2d array of rows and columns data
 
     // first index (0) of tableArray is row with table headers!;
     table.push(headers);
 
-    // for Each ROW
+    // for Each - every table ROW
     data.forEach((row)=>{
-      const rowValues: string[] = [];
+      const rowValues: ColumnField[] = [];
 
-      //  for loop; calls for every column in table
-      columnsConfig.forEach(({columnIndex, columnFormat}: ColumnConfig)=>{
+      //  for loop; calls for every column in table (in specific row)
+      columnsConfig.forEach(({columnIndex, columnFormat, columnClassName}: ColumnConfig)=>{
         //Value of field in column; if not defined set it to empty string
-        const rawFieldValue: string = row[columnIndex] ?? '';
-
-        //Value of field after formating by userprovided function;
-        let formatedFieldValue: string = rawFieldValue;
-
-        if(columnFormat && isFunction(columnFormat)){
-          formatedFieldValue = columnFormat(rawFieldValue);
+        const field: ColumnField = {
+          value: row[columnIndex] ?? '',
+          className: columnClassName ?? '',
         }
 
-        rowValues.push(formatedFieldValue);
+        //format value by user provided format function
+        if(columnFormat && isFunction(columnFormat)){
+          field.value = columnFormat(field.value);
+        }
+
+        rowValues.push(field);
       })
       table.push(rowValues);
     })
 
-
-    console.log(table);
     return table;
   }
 
   /*
     returns an array of strings with column names;
   */
-  getTableHeaderNames(columnsConfig: ColumnConfig[]) : string[] {
-    const headers: string[] = [];
+  getTableHeaderNames(columnsConfig: ColumnConfig[]) : ColumnField[] {
+    const headers: ColumnField[] = [];
     columnsConfig.forEach((v)=>{
-      headers.push(v.columnName);
+      headers.push({
+        value: v.columnName,
+        className: v.columnClassName ?? ''
+      });
     }) 
     return headers;
   }
@@ -70,7 +72,7 @@ export default class Table {
 
     By default returns null;
   */
-  renderWay = (_tableArray: string[][]) => {
+  renderWay = (_tableArray: ColumnField[][]) => {
     return null;
   }
 
