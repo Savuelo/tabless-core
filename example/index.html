@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script type="module">
+    import Tabless from '/dist/index.js';
+
+    const data = [
+      {
+        name: 'Hubert', 
+        lastname: 'Dziuda', 
+      },
+      {
+        name: 'John',
+        lastname: 'snow',
+      },
+      {
+        name: 'John', 
+        lastname: 'Smith', 
+      },
+      {
+        name: 'Mark',
+        lastname: 'Steward', 
+      }
+    ];
+
+    const columns = [ 
+      {
+        columnName: 'Name:', // Display name of column
+        columnIndex: 'name', // index/property of object with data
+      },
+      {
+        columnName: 'Lastname:',
+        columnIndex: 'lastname',
+
+        /*
+          Format function what will be used to format data in column
+          In this case all of the data in this column will be uppercased
+        */
+        columnFormat: (value) => {
+          return value.toUpperCase();
+        }
+      }
+    ];
+    
+    const tab = new Tabless(columns, data);
+
+    tab.renderWay = (data) => {
+      const tableElement = document.createElement('table');
+      const tableHead = document.createElement('thead');
+      const tableBody = document.createElement('tbody');
+
+      const headersRow = document.createElement('tr');
+
+      data[0].forEach((v, i)=>{
+        const headerElement = document.createElement('th');
+        headerElement.innerText = v.value;
+        if(v.className){
+          headerElement.classList.add(v.className)
+        }
+        headersRow.append(headerElement)
+      });
+
+      data.forEach((v, i)=>{
+        if(i === 0) return;
+
+        const dataRow = document.createElement('tr');
+        
+        for (const property in v) {
+          const field = document.createElement('td');
+          field.innerHTML = v[property].value;
+          if(v[property].className){
+            field.classList.add(v[property].className);
+          }
+          dataRow.append(field);
+        }
+        tableBody.append(dataRow);
+      })
+
+
+      tableHead.append(headersRow);
+      tableElement.append(tableHead);
+      tableElement.append(tableBody);
+      return tableElement;
+    }
+    
+    document.getElementById('tableRoot').append(tab.render());
+  </script>
+</head>
+<body>
+  <div id="tableRoot">
+
+  </div>
+</body>
+</html>

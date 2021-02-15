@@ -1,10 +1,10 @@
-import { ColumnConfig, ColumnField } from './models/Interfaces';
+import { ColumnConfig, ColumnCell } from './models/Interfaces';
 import { isFunction } from './utilities/utilities.js';
-export default class Table {
+export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
   data: any[]; //Data displated in column
   
-  tableArray: ColumnField[][] = [];
+  tableArray: ColumnCell[][] = [];
 
   constructor(columnsConfig: ColumnConfig[], data: any[]) {
     this.columnsConfig = columnsConfig;
@@ -20,21 +20,21 @@ export default class Table {
     Data is formated with provided functions;
     if no function formater is provided by end user saves raw data;
   */
-  formatNewData(columnsConfig: ColumnConfig[], data: any[]): ColumnField[][] {
-    const headers : ColumnField[] = this.getTableHeaderNames(columnsConfig);// array with column names;
-    const table: ColumnField[][] = []; //Temp variable with 2d array of rows and columns data
+  formatNewData(columnsConfig: ColumnConfig[], data: any[]): ColumnCell[][] {
+    const headers : ColumnCell[] = this.getTableHeaderNames(columnsConfig);// array with column names;
+    const table: ColumnCell[][] = []; //Temp variable with 2d array of rows and columns data
 
     // first index (0) of tableArray is row with table headers!;
     table.push(headers);
 
     // for Each - every table ROW
     data.forEach((row)=>{
-      const rowValues: ColumnField[] = [];
+      const rowValues: ColumnCell[] = [];
 
       //  for loop; calls for every column in table (in specific row)
       columnsConfig.forEach(({columnIndex, columnFormat, columnClassName}: ColumnConfig)=>{
         //Value of field in column; if not defined set it to empty string
-        const field: ColumnField = {
+        const field: ColumnCell = {
           value: row[columnIndex] ?? '',
           className: columnClassName ?? '',
         }
@@ -55,8 +55,8 @@ export default class Table {
   /*
     returns an array of strings with column names;
   */
-  getTableHeaderNames(columnsConfig: ColumnConfig[]) : ColumnField[] {
-    const headers: ColumnField[] = [];
+  getTableHeaderNames(columnsConfig: ColumnConfig[]) : ColumnCell[] {
+    const headers: ColumnCell[] = [];
     columnsConfig.forEach((v)=>{
       headers.push({
         value: v.columnName,
@@ -72,7 +72,7 @@ export default class Table {
 
     By default returns null;
   */
-  renderWay = (_tableArray: ColumnField[][]) => {
+  renderWay = (_tableArray: ColumnCell[][]) => {
     return null;
   }
 
