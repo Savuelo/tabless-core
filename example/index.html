@@ -11,18 +11,22 @@
       {
         name: 'Hubert', 
         lastname: 'Dziuda', 
+        age: 20,
       },
       {
         name: 'John',
-        lastname: 'snow',
+        lastname: 'Snow',
+        age: 29,
       },
       {
-        name: 'John', 
-        lastname: 'Smith', 
+        name: 'Tom', 
+        lastname: 'Williams', 
+        age: 19,
       },
       {
         name: 'Mark',
-        lastname: 'Steward', 
+        lastname: 'Brown', 
+        age: 24,
       }
     ];
 
@@ -42,6 +46,10 @@
         columnFormat: (value) => {
           return value.toUpperCase();
         }
+      },
+      {
+        columnName: 'Age:',
+        columnIndex: 'age',
       }
     ];
 
@@ -49,13 +57,15 @@
     // config object used to create Tabless instance
     const config = {
       addOrdinalNumber: true,
+      ordinalHeader: 'Index:',
     }
     
     const tabless = new Tabless(columns, data, config);
 
     //Configuration of already created Tabless instance
     tabless.setConfig({
-      ordinalHeader: 'Index:',
+      orderBy: 'age',
+      descending: true,
     })
 
     tabless.renderWay = (data) => {

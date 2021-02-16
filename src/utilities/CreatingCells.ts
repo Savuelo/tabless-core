@@ -1,5 +1,5 @@
 import { isFunction } from './utilities.js';
-import { ColumnConfig, Cell  } from './../models/Interfaces';
+import { ColumnConfig, Cell  } from '../models/Interfaces';
 
 export const createDataCell  = (row: any, columnConfig: ColumnConfig) : Cell => {
   const {columnIndex, columnClassName, columnFormat } = columnConfig;

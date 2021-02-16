@@ -89,6 +89,12 @@ const config = {
 **bolean** `addOrdinalNumber` : default **false**, add optional column with ordinary numbery.  
 **string** `ordinalHeader` : default **'No.'**, header of ordinary number column.  
 **string** `ordinalColumnClassName` : default **'ordinal'**, class name of ordinal number column.  
+**string** `orderBy` : default **'undefined'**, index/property of data object used in sorting. If not defined or property is not valid table won't be sorted.*
+**boolean** `descending` : default **false**, set to true if you want to sort your table descending. Works only when `orderBy` config is set.    
+**boolean** `headerless` : default **false**, set to true if you want to generate table array without header row (you still have to pass columnConfig!) Make sure you adjust implementation of the `renderWay` method.    
+
+
+> :warning: * when sorting make sure that all of the data in column in table represents the same type.
 
 
 #### Create instace of Tabless

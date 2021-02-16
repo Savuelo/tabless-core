@@ -12,4 +12,7 @@ export interface TableConfig{
   addOrdinalNumber?: boolean,
   ordinalHeader?: string,
   ordinalColumnClassName?: string,
+  orderBy?: string,
+  descending?: boolean,
+  headerless?: boolean,
 }
