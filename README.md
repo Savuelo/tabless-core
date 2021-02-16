@@ -88,6 +88,7 @@ const config = {
 ##### Avaiable config options
 **bolean** `addOrdinalNumber` : default **false**, add optional column with ordinary numbery.
 **string** `ordinalHeader` : default **'No.'**, header of ordinary number column.
+**string** `ordinalColumnClassName` : default **'ordinal'**, class name of ordinal number column.
 
 
 #### Create instace of tabless

@@ -1,5 +1,6 @@
 import { ColumnConfig, TableConfig, ColumnCell } from './models/Interfaces';
 import { isFunction } from './utilities/utilities.js';
+
 export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
   data: any[]; //Data displated in column
@@ -13,6 +14,7 @@ export default class Tabless {
     this.config = {
       addOrdinalNumber: config.addOrdinalNumber ?? false,
       ordinalHeader: config.ordinalHeader ?? 'No.',
+      ordinalColumnClassName: config.ordinalColumnClassName ?? 'ordinal',
     };
   }
 
@@ -39,7 +41,7 @@ export default class Tabless {
         const currentOrdinal: number = index + 1;
         rowValues.push({
           value: currentOrdinal.toString(),
-          className: 'ordinal',
+          className: this.config.ordinalColumnClassName ?? 'ordinal',
         })
       }
 
@@ -73,7 +75,7 @@ export default class Tabless {
     if(this.config.addOrdinalNumber){
       headers.push({
         value: this.config.ordinalHeader ?? 'No.',
-        className: 'ordinal',
+        className: this.config.ordinalColumnClassName ?? 'ordinal',
       })
     }
 
@@ -104,6 +106,7 @@ export default class Tabless {
 
   */
   render = () => {
+    //Format array before passing it into renderWay();
     this.tableArray = this.formatData(this.columnsConfig, this.data);
 
     return this.renderWay(this.tableArray);

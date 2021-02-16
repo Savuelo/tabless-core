@@ -11,4 +11,5 @@ export interface ColumnCell {
 export interface TableConfig{
   addOrdinalNumber?: boolean,
   ordinalHeader?: string,
+  ordinalColumnClassName?: string,
 }
