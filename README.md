@@ -49,12 +49,12 @@ const columns = [
 #### Available column config options
 
 ###### Required:
-**string** `columnName` : Name of the column (header name)
-**string** `columnIndex` : Index or property of data object.
+**string** `columnName` : Name of the column (header name).   
+**string** `columnIndex` : Index or property of data object.  
 
 ###### Optional:
-**function** `columnFormat` : Function used to format data in the column.
-**string** `columnClassName` : Class name of the column.
+**function** `columnFormat` : Function used to format data in the column.  
+**string** `columnClassName` : Class name of the column.  
 
 #### Example data
 ```javascript
@@ -86,9 +86,9 @@ const config = {
 }
 ```
 ##### Avaiable config options
-**bolean** `addOrdinalNumber` : default **false**, add optional column with ordinary numbery.
-**string** `ordinalHeader` : default **'No.'**, header of ordinary number column.
-**string** `ordinalColumnClassName` : default **'ordinal'**, class name of ordinal number column.
+**bolean** `addOrdinalNumber` : default **false**, add optional column with ordinary numbery.  
+**string** `ordinalHeader` : default **'No.'**, header of ordinary number column.  
+**string** `ordinalColumnClassName` : default **'ordinal'**, class name of ordinal number column.  
 
 
 #### Create instace of Tabless
@@ -116,8 +116,8 @@ Top-level array (stores rows) is filled with arrays, which stores stores cell va
 **First** element of top-level array is array with headers.
 
 ###### Cell Object: 
-**string** `value` : value of cell
-**string** `className` : cell class name.
+**string** `value` : value of cell.  
+**string** `className` : cell class name.  
 
 **renderWay** should return ready to display table of any desired type.
 

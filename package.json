@@ -14,6 +14,10 @@
     "table-js",
     "table-generator"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Savuelo/tabless-core"
+  },
   "author": "savuelo",
   "license": "MIT",
   "devDependencies": {
