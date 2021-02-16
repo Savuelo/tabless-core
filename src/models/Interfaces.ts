@@ -4,7 +4,7 @@ export interface ColumnConfig {
   columnFormat?: Function,
   columnClassName?: string,
 }
-export interface ColumnCell { 
+export interface Cell { 
   value: string,
   className: string,
 }

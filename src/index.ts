@@ -1,5 +1,5 @@
-import { ColumnConfig, TableConfig, ColumnCell } from './models/Interfaces';
-import { isFunction } from './utilities/utilities.js';
+import { ColumnConfig, TableConfig, Cell } from './models/Interfaces';
+import { createDataCell, createCellFromRawData } from './utilities/Formating.js';
 
 export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
@@ -12,7 +12,7 @@ export default class Tabless {
   };
   
   //Aray that stores formated table data;
-  tableArray: ColumnCell[][] = [];
+  tableArray: Cell[][] = [];
 
   constructor(columnsConfig: ColumnConfig[], data: any[], config: TableConfig = {} ) {
     this.columnsConfig = columnsConfig;
@@ -35,39 +35,29 @@ export default class Tabless {
     Data is formated with provided functions;
     if no function formater is provided by end user saves raw data;
   */
-  formatData(columnsConfig: ColumnConfig[], data: any[]): ColumnCell[][] {
-    const headers : ColumnCell[] = this.getTableHeaderNames(columnsConfig);// array with column names;
-    const table: ColumnCell[][] = []; //Temp variable with 2d array of rows and columns data
+  formatData(columnsConfig: ColumnConfig[], data: any[]): Cell[][] {
+    const headers : Cell[] = this.getTableHeaderNames(columnsConfig);// array with column names;
+    const table: Cell[][] = []; //Temp variable with 2d array of rows and columns data
 
     // first index (0) of tableArray is row with table headers!;
     table.push(headers);
 
     // for Each - every table ROW
     data.forEach((row, index)=>{
-      const rowValues: ColumnCell[] = [];
+      const rowValues: Cell[] = [];
 
       // Add ordinal number if user provided that request in config
       if(this.config.addOrdinalNumber){
         const currentOrdinal: number = index + 1;
-        rowValues.push({
-          value: currentOrdinal.toString(),
-          className: this.config.ordinalColumnClassName ?? 'ordinal',
-        })
+        const className: string = this.config.ordinalColumnClassName ?? 'ordinal';
+
+        const cell: Cell = createCellFromRawData(currentOrdinal.toString(), className);
+        rowValues.push(cell);
       }
 
       //  for loop; calls for every column in table (in specific row)
-      columnsConfig.forEach(({columnIndex, columnFormat, columnClassName}: ColumnConfig)=>{
-        //Value of field in column; if not defined set it to empty string
-        const cell: ColumnCell = {
-          value: row[columnIndex] ?? '',
-          className: columnClassName ?? '',
-        }
-
-        //format value by user provided format function
-        if(columnFormat && isFunction(columnFormat)){
-          cell.value = columnFormat(cell.value);
-        }
-
+      columnsConfig.forEach((columnConfig: ColumnConfig)=>{
+        const cell: Cell = createDataCell(row, columnConfig)
         rowValues.push(cell);
       })
       table.push(rowValues);
@@ -79,21 +69,22 @@ export default class Tabless {
   /*
     returns an array of strings with column names;
   */
-  getTableHeaderNames(columnsConfig: ColumnConfig[]) : ColumnCell[] {
-    const headers: ColumnCell[] = [];
+  getTableHeaderNames(columnsConfig: ColumnConfig[]) : Cell[] {
+    const headers: Cell[] = [];
 
+    // If ordinary cell is request add header
     if(this.config.addOrdinalNumber){
-      headers.push({
-        value: this.config.ordinalHeader ?? 'No.',
-        className: this.config.ordinalColumnClassName ?? 'ordinal',
-      })
+      const value =  this.config.ordinalHeader ?? 'No.';
+      const className = this.config.ordinalColumnClassName ?? 'ordinal';
+
+      const ordinaryHeaderCell: Cell = createCellFromRawData(value, className);
+      headers.push(ordinaryHeaderCell);
     }
 
-    columnsConfig.forEach((v)=>{
-      headers.push({
-        value: v.columnName,
-        className: v.columnClassName ?? ''
-      });
+    //create header cell
+    columnsConfig.forEach(({columnName, columnClassName})=>{
+      const headerCell: Cell = createCellFromRawData(columnName, columnClassName);
+      headers.push(headerCell);
     }) 
     return headers;
   }
@@ -104,7 +95,7 @@ export default class Tabless {
 
     By default returns null;
   */
-  renderWay = (_tableArray: ColumnCell[][]) => {
+  renderWay = (_tableArray: Cell[][]) => {
     return null;
   }
 
