@@ -45,13 +45,20 @@
       }
     ];
 
+
+    // config object used to create Tabless instance
     const config = {
       addOrdinalNumber: true,
     }
     
-    const tab = new Tabless(columns, data, config);
+    const tabless = new Tabless(columns, data, config);
 
-    tab.renderWay = (data) => {
+    //Configuration of already created Tabless instance
+    tabless.setConfig({
+      ordinalHeader: 'Index:',
+    })
+
+    tabless.renderWay = (data) => {
       const tableElement = document.createElement('table');
       const tableHead = document.createElement('thead');
       const tableBody = document.createElement('tbody');
@@ -90,7 +97,7 @@
       return tableElement;
     }
     
-    document.getElementById('tableRoot').append(tab.render());
+    document.getElementById('tableRoot').append(tabless.render());
   </script>
 </head>
 <body>

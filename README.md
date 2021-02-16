@@ -91,9 +91,17 @@ const config = {
 **string** `ordinalColumnClassName` : default **'ordinal'**, class name of ordinal number column.
 
 
-#### Create instace of tabless
+#### Create instace of Tabless
 ```javascript
 const tabless = new Tabless(columns, data, config);
+```
+
+#### Configuring existing Tabless instance
+To change configuration of existing Tabless instance call `setConfig` method and pass config object. It will overwrite config options and effect every of future renders.
+```javascript
+tabless.setConfig({
+  ordinalHeader: 'Index:',
+})
 ```
 #### Implement tabless in you environment
 
@@ -120,7 +128,7 @@ Code below is meant to work in browser environment.
 > :warning: Code below is just simplified example! It's not optimised and do not follow rules of good coding.
 
 ```javascript
-tab.renderWay = (data) => {
+tabless.renderWay = (data) => {
   const tableElement = document.createElement('table');
   const tableHead = document.createElement('thead');
   const tableBody = document.createElement('tbody');
@@ -163,5 +171,5 @@ tab.renderWay = (data) => {
 
 To execute code, call `render` method of your **Tabless** instance
 ```javascript
-document.getElementById('id-of-element').append(tab.render());
+document.getElementById('id-of-element').append(tabless.render());
 ```

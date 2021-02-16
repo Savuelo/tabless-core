@@ -4,20 +4,30 @@ import { isFunction } from './utilities/utilities.js';
 export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
   data: any[]; //Data displated in column
-  config: TableConfig;
+
+  config: TableConfig = { //Default configuration on Tabless instance;
+    addOrdinalNumber: false,
+    ordinalHeader: 'No.',
+    ordinalColumnClassName: 'ordinal',
+  };
   
+  //Aray that stores formated table data;
   tableArray: ColumnCell[][] = [];
 
   constructor(columnsConfig: ColumnConfig[], data: any[], config: TableConfig = {} ) {
     this.columnsConfig = columnsConfig;
     this.data = data;
-    this.config = {
-      addOrdinalNumber: config.addOrdinalNumber ?? false,
-      ordinalHeader: config.ordinalHeader ?? 'No.',
-      ordinalColumnClassName: config.ordinalColumnClassName ?? 'ordinal',
-    };
+
+    this.setConfig(config);
   }
 
+  /*
+    Updates current configuration with new configuration provided by user
+  */
+  setConfig(newConfig: TableConfig) {
+    this.config = {...this.config, ...newConfig};
+  }
+  
   /*
     Prepares data ready to be mapped to table element;
     sets 2D array of ColumnField with columns and rows of table data;
