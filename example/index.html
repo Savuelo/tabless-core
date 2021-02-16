@@ -44,8 +44,12 @@
         }
       }
     ];
+
+    const config = {
+      addOrdinalNumber: true,
+    }
     
-    const tab = new Tabless(columns, data);
+    const tab = new Tabless(columns, data, config);
 
     tab.renderWay = (data) => {
       const tableElement = document.createElement('table');

@@ -8,3 +8,7 @@ export interface ColumnCell {
   value: string,
   className: string,
 }
+export interface TableConfig{
+  addOrdinalNumber?: boolean,
+  ordinalHeader?: string,
+}

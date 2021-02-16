@@ -1,3 +1,5 @@
+Format raw data into ease to handle table data.
+
 > :warning: It's core version of tabless, ready to use implementations of tabless in e.g. React, Vue will be avaiable soon.
 ## Installing 
 ```bash
@@ -75,9 +77,22 @@ const data = [
   }
 ];
 ```
+#### Create config object
+Providing config object is optional.
+
+```javascript
+const config = {
+  addOrdinalNumber: true, //Creates column with ordinal number
+}
+```
+##### Avaiable config options
+**bolean** `addOrdinalNumber` : default **false**, add optional column with ordinary numbery.
+**string** `ordinalHeader` : default **'No.'**, header of ordinary number column.
+
+
 #### Create instace of tabless
 ```javascript
-const tabless = new Tabless(columns, data);
+const tabless = new Tabless(columns, data, config);
 ```
 #### Implement tabless in you environment
 
@@ -91,7 +106,7 @@ Top-level array (stores rows) is filled with arrays, which stores stores cell va
 
 **First** element of top-level array is array with headers.
 
-Cell Object: 
+###### Cell Object: 
 **string** `value` : value of cell
 **string** `className` : cell class name.
 

@@ -1,16 +1,19 @@
-import { ColumnConfig, ColumnCell } from './models/Interfaces';
+import { ColumnConfig, TableConfig, ColumnCell } from './models/Interfaces';
 import { isFunction } from './utilities/utilities.js';
 export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
   data: any[]; //Data displated in column
+  config: TableConfig;
   
   tableArray: ColumnCell[][] = [];
 
-  constructor(columnsConfig: ColumnConfig[], data: any[]) {
+  constructor(columnsConfig: ColumnConfig[], data: any[], config: TableConfig = {} ) {
     this.columnsConfig = columnsConfig;
     this.data = data;
-
-    this.tableArray = this.formatNewData(this.columnsConfig, this.data);
+    this.config = {
+      addOrdinalNumber: config.addOrdinalNumber ?? false,
+      ordinalHeader: config.ordinalHeader ?? 'No.',
+    };
   }
 
   /*
@@ -20,7 +23,7 @@ export default class Tabless {
     Data is formated with provided functions;
     if no function formater is provided by end user saves raw data;
   */
-  formatNewData(columnsConfig: ColumnConfig[], data: any[]): ColumnCell[][] {
+  formatData(columnsConfig: ColumnConfig[], data: any[]): ColumnCell[][] {
     const headers : ColumnCell[] = this.getTableHeaderNames(columnsConfig);// array with column names;
     const table: ColumnCell[][] = []; //Temp variable with 2d array of rows and columns data
 
@@ -28,23 +31,32 @@ export default class Tabless {
     table.push(headers);
 
     // for Each - every table ROW
-    data.forEach((row)=>{
+    data.forEach((row, index)=>{
       const rowValues: ColumnCell[] = [];
+
+      // Add ordinal number if user provided that request in config
+      if(this.config.addOrdinalNumber){
+        const currentOrdinal: number = index + 1;
+        rowValues.push({
+          value: currentOrdinal.toString(),
+          className: 'ordinal',
+        })
+      }
 
       //  for loop; calls for every column in table (in specific row)
       columnsConfig.forEach(({columnIndex, columnFormat, columnClassName}: ColumnConfig)=>{
         //Value of field in column; if not defined set it to empty string
-        const field: ColumnCell = {
+        const cell: ColumnCell = {
           value: row[columnIndex] ?? '',
           className: columnClassName ?? '',
         }
 
         //format value by user provided format function
         if(columnFormat && isFunction(columnFormat)){
-          field.value = columnFormat(field.value);
+          cell.value = columnFormat(cell.value);
         }
 
-        rowValues.push(field);
+        rowValues.push(cell);
       })
       table.push(rowValues);
     })
@@ -57,6 +69,14 @@ export default class Tabless {
   */
   getTableHeaderNames(columnsConfig: ColumnConfig[]) : ColumnCell[] {
     const headers: ColumnCell[] = [];
+
+    if(this.config.addOrdinalNumber){
+      headers.push({
+        value: this.config.ordinalHeader ?? 'No.',
+        className: 'ordinal',
+      })
+    }
+
     columnsConfig.forEach((v)=>{
       headers.push({
         value: v.columnName,
@@ -84,6 +104,8 @@ export default class Tabless {
 
   */
   render = () => {
+    this.tableArray = this.formatData(this.columnsConfig, this.data);
+
     return this.renderWay(this.tableArray);
   }
 }
