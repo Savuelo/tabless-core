@@ -1,6 +1,6 @@
 import { ColumnConfig, TableConfig, Cell, TableRow } from '../../models/Interfaces';
 import { createDataCell, createCellFromRawData } from '../CreatingCells';
-import { isObjectEmpty } from '../utilities';
+import { isObjectValid } from '../utilities';
 
 /*
   Returns array of TableRows of table data;
@@ -15,7 +15,7 @@ export function generateTableBody(columnsConfig: ColumnConfig[], data: any[], co
   let currentOrdinal = 1;
   data.forEach((sourceObject, index)=>{
     //Check is sourceObject valid object
-    if(sourceObject && (isObjectEmpty(sourceObject) || typeof sourceObject !== 'object')){
+    if(!isObjectValid(sourceObject)){
       return;
     }
 

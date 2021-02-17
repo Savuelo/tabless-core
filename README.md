@@ -111,7 +111,8 @@ const tabless = new Tabless(columns, data, config);
 To change configuration of existing Tabless instance call `setConfig` method and pass config object. It will overwrite config options and effect every of future renders.
 ```javascript
 tabless.setConfig({
-  ordinalHeader: 'Index:',
+  orderBy: 'age',
+  descending: true,
 })
 ```
 
@@ -127,6 +128,13 @@ tabless.addRow({
   age: 22,
 }, true); //second parameter is true, so the new row will be added at the beginning of the table. 
 
+```
+
+#### Removing row
+To remove row from array pass row's absolute id into `removeRow` method.
+Be careful! This action may afftect absolute ids of other rows.
+```javascript
+tabless.removeRow(2);
 ```
 #### Implement tabless in you environment
 
@@ -144,7 +152,6 @@ Override `renderWay` function in your Tabless instance with your implementation.
 ###### Cell Object: 
 **string** `value` : value of cell.    
 **string** `className` : cell class name.   
-
 
 **renderWay** should return ready to display table of any desired type.
 

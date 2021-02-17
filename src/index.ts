@@ -2,6 +2,7 @@ import { ColumnConfig, TableConfig, TableRow } from './models/Interfaces';
 import { sortData } from './util/Sorting';
 import { generateTableBody } from './util/tableGenerating/TableBody';
 import { generateHeaders } from './util/tableGenerating/TableHeaders';
+import { isObjectValid, removeInvalidElements } from './util/utilities'
 
 export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
@@ -18,7 +19,7 @@ export default class Tabless {
 
   constructor(columnsConfig: ColumnConfig[], data: any[], config: TableConfig = {} ) {
     this.columnsConfig = columnsConfig;
-    this.data = data;
+    this.data = removeInvalidElements(data);
 
     this.setConfig(config);
   }
@@ -33,13 +34,20 @@ export default class Tabless {
   /*
     Add new row to existing table
   */
-  addRow(newRow: any, atBeginning: boolean){
-    if(newRow){
+  addRow(newRow: any, atBeginning: boolean = false){
+    if(isObjectValid(newRow)){
       if(atBeginning){
         this.data.unshift(newRow);
       }else{
         this.data.push(newRow);
       }
+    }
+  }
+
+  removeRow(rowAbsoluteId: number){
+    if(isNaN(rowAbsoluteId)) return;
+    if(rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length){
+      this.data.slice(rowAbsoluteId, 1);
     }
   }
 

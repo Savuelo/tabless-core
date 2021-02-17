@@ -65,6 +65,8 @@ tabless.setConfig({
   descending: true,
 });
 
+tabless.removeRow(0)
+
 // row to the table
 tabless.addRow({
   name: 'Ron',

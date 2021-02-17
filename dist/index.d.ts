@@ -5,7 +5,8 @@ export default class Tabless {
     config: TableConfig;
     constructor(columnsConfig: ColumnConfig[], data: any[], config?: TableConfig);
     setConfig(newConfig: TableConfig): void;
-    addRow(newRow: any, atBeginning: boolean): void;
+    addRow(newRow: any, atBeginning?: boolean): void;
+    removeRow(rowAbsoluteId: number): void;
     renderWay: (_tableArray: TableRow[]) => null;
     render: () => null;
 }
