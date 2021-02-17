@@ -32,7 +32,8 @@ export default class Tabless {
   }
 
   /*
-    Add new row to existing table
+    Add new row to existing table;
+    if new row will be added at beggining it will affect other rows absolute id
   */
   addRow(newRow: any, atBeginning: boolean = false){
     if(isObjectValid(newRow)){
@@ -44,11 +45,46 @@ export default class Tabless {
     }
   }
 
+  /*
+    Updates existing row with new data;
+  */
+  updateRow(newRowValues: any, rowAbsoluteId: number){
+    if(isNaN(rowAbsoluteId)) return;
+    if(rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length){
+      if(isObjectValid(newRowValues)){
+        this.data[rowAbsoluteId] = {...this.data[rowAbsoluteId], ...newRowValues};
+      }
+    }
+  }
+
+  /*
+    Remove row from table, may affect other rows absolute id 
+  */
   removeRow(rowAbsoluteId: number){
     if(isNaN(rowAbsoluteId)) return;
     if(rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length){
       this.data.slice(rowAbsoluteId, 1);
     }
+  }
+
+  /*
+    
+  */
+  removeMultipleRows(rowAbsoluteIds: number[]){
+    this.data = this.data.filter((v, rowId: number) => {
+      let match = false; 
+
+      rowAbsoluteIds.forEach((idToRemove)=> {
+        if(idToRemove < 0 || isNaN(idToRemove)) return; //skip negative numbers
+
+        if(rowId === idToRemove){
+          match = true;
+        }
+      })
+
+      // Every id that match with id to remove will be removed
+      return !match;
+    })
   }
 
   /*

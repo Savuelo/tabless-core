@@ -118,7 +118,7 @@ tabless.setConfig({
 
 #### Adding new row
 To create new row in existing Tabless instance use `addRow` method. It accepts  2 params: Object with data of the new row, and boolean what decides about putting new row to the start or end of the table. Note that if you are using sorting data in Tabless new row will be sorted as normal row, even if you pass param that puts it on the start of the table.    
-After adding new row you should re-render the table.
+After adding new row you should re-render the table. It may affect absolute id of other rows.
 
 ```javascript
 // row to the table
@@ -130,11 +130,15 @@ tabless.addRow({
 
 ```
 
-#### Removing row
+#### Removing row(s)
 To remove row from array pass row's absolute id into `removeRow` method.
-Be careful! This action may afftect absolute ids of other rows.
+Be careful! This action may afftect absolute ids of other rows. You should re-render table to obtain actual absolute ids.
 ```javascript
 tabless.removeRow(2);
+```
+To remove multiple rows at once (do not use `removeRow` method to achive this!) use `removeMultipleRows`. It filters existing table array and excludes matching items. It affects absolute ids, so re-render table.
+```javascript
+tabless.removeMultipleRows([0, 1, 2, 3]);
 ```
 #### Implement tabless in you environment
 
