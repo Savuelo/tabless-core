@@ -11,9 +11,10 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Sorting_1 = require("./utilities/Sorting");
-var TableBody_1 = require("./utilities/tableGenerating/TableBody");
-var TableHeaders_1 = require("./utilities/tableGenerating/TableHeaders");
+var Sorting_1 = require("./util/Sorting");
+var TableBody_1 = require("./util/tableGenerating/TableBody");
+var TableHeaders_1 = require("./util/tableGenerating/TableHeaders");
+var utilities_1 = require("./util/utilities");
 var Tabless = /** @class */ (function () {
     function Tabless(columnsConfig, data, config) {
         var _this = this;
@@ -40,7 +41,6 @@ var Tabless = /** @class */ (function () {
           Also passes to method values from this class;
           that allows to pass values as props when renderWay is overrieded by
           other method;
-      
         */
         this.render = function () {
             var columnsConfig = _this.columnsConfig;
@@ -62,19 +62,19 @@ var Tabless = /** @class */ (function () {
                 }
             }
             //Create headers row;    
-            var headers = TableHeaders_1.generateHeaders(columnsConfig, config); // array with column names;
+            var header = TableHeaders_1.generateHeaders(columnsConfig, config); // array with column names;
             //create tableBody rows;
             var table = TableBody_1.generateTableBody(columnsConfig, data, config);
-            //headers are always the first element of the table array;
+            // Skip adding headers if table is going to be headerlesss
             if (!config.headerless) {
-                table.unshift(headers);
+                //headers are always the first element of the table array; 
+                table.unshift(header);
             }
             // table.unshift(headers)
             return _this.renderWay(table);
         };
         this.columnsConfig = columnsConfig;
-        this.data = data;
-        console.log("eeeeqeqefww");
+        this.data = utilities_1.removeInvalidElements(data);
         this.setConfig(config);
     }
     /*
@@ -82,6 +82,60 @@ var Tabless = /** @class */ (function () {
     */
     Tabless.prototype.setConfig = function (newConfig) {
         this.config = __assign(__assign({}, this.config), newConfig);
+    };
+    /*
+      Add new row to existing table;
+      if new row will be added at beggining it will affect other rows absolute id
+    */
+    Tabless.prototype.addRow = function (newRow, atBeginning) {
+        if (atBeginning === void 0) { atBeginning = false; }
+        if (utilities_1.isObjectValid(newRow)) {
+            if (atBeginning) {
+                this.data.unshift(newRow);
+            }
+            else {
+                this.data.push(newRow);
+            }
+        }
+    };
+    /*
+      Updates existing row with new data;
+    */
+    Tabless.prototype.updateRow = function (newRowValues, rowAbsoluteId) {
+        if (isNaN(rowAbsoluteId))
+            return;
+        if (rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length) {
+            if (utilities_1.isObjectValid(newRowValues)) {
+                this.data[rowAbsoluteId] = __assign(__assign({}, this.data[rowAbsoluteId]), newRowValues);
+            }
+        }
+    };
+    /*
+      Remove row from table, may affect other rows absolute id
+    */
+    Tabless.prototype.removeRow = function (rowAbsoluteId) {
+        if (isNaN(rowAbsoluteId))
+            return;
+        if (rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length) {
+            this.data.slice(rowAbsoluteId, 1);
+        }
+    };
+    /*
+      
+    */
+    Tabless.prototype.removeMultipleRows = function (rowAbsoluteIds) {
+        this.data = this.data.filter(function (v, rowId) {
+            var match = false;
+            rowAbsoluteIds.forEach(function (idToRemove) {
+                if (idToRemove < 0 || isNaN(idToRemove))
+                    return; //skip negative numbers
+                if (rowId === idToRemove) {
+                    match = true;
+                }
+            });
+            // Every id that match with id to remove will be removed
+            return !match;
+        });
     };
     return Tabless;
 }());
