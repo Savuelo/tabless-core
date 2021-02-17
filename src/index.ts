@@ -1,7 +1,7 @@
-import { ColumnConfig, TableConfig, Cell } from './models/Interfaces';
-import { sortData } from './utilities/Sorting';
-import { generateTableBody } from './utilities/tableGenerating/TableBody';
-import { generateHeaders } from './utilities/tableGenerating/TableHeaders';
+import { ColumnConfig, TableConfig, TableRow } from './models/Interfaces';
+import { sortData } from './util/Sorting';
+import { generateTableBody } from './util/tableGenerating/TableBody';
+import { generateHeaders } from './util/tableGenerating/TableHeaders';
 
 export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
@@ -20,8 +20,6 @@ export default class Tabless {
     this.columnsConfig = columnsConfig;
     this.data = data;
 
-    console.log("eeeeqeqefww");
-
     this.setConfig(config);
   }
 
@@ -31,14 +29,27 @@ export default class Tabless {
   setConfig(newConfig: TableConfig) {
     this.config = {...this.config, ...newConfig};
   }
-  
+
+  /*
+    Add new row to existing table
+  */
+  addRow(newRow: any, atBeginning: boolean){
+    if(newRow){
+      if(atBeginning){
+        this.data.unshift(newRow);
+      }else{
+        this.data.push(newRow);
+      }
+    }
+  }
+
   /*
     Method that will be overrided in other module;
     In core its just "virtual" like method;
 
     By default returns null;
   */
-  renderWay = (_tableArray: Cell[][]) => {
+  renderWay = (_tableArray: TableRow[]) => {
     return null;
   }
 
@@ -47,7 +58,6 @@ export default class Tabless {
     Also passes to method values from this class;
     that allows to pass values as props when renderWay is overrieded by 
     other method;
-
   */
   render = () => {
     const columnsConfig = this.columnsConfig;
@@ -74,13 +84,14 @@ export default class Tabless {
     }
 
     //Create headers row;    
-    const headers : Cell[] = generateHeaders(columnsConfig, config);// array with column names;
+    const header : TableRow = generateHeaders(columnsConfig, config);// array with column names;
     //create tableBody rows;
-    const table : Cell[][] = generateTableBody(columnsConfig, data, config);
+    const table : TableRow[] = generateTableBody(columnsConfig, data, config);
 
-    //headers are always the first element of the table array;
+    // Skip adding headers if table is going to be headerlesss
     if(!config.headerless){
-      table.unshift(headers);
+      //headers are always the first element of the table array; 
+      table.unshift(header);
     }
     
     // table.unshift(headers)

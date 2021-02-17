@@ -61,6 +61,7 @@ const columns = [
 **string** `columnClassName` : Class name of the column.  
 
 #### Example data
+Note that empty objects will be skipped during generation of output Table.
 ```javascript
 const data = [
   {
@@ -113,24 +114,39 @@ tabless.setConfig({
   ordinalHeader: 'Index:',
 })
 ```
+
+#### Adding new row
+To create new row in existing Tabless instance use `addRow` method. It accepts  2 params: Object with data of the new row, and boolean what decides about putting new row to the start or end of the table. Note that if you are using sorting data in Tabless new row will be sorted as normal row, even if you pass param that puts it on the start of the table.    
+After adding new row you should re-render the table.
+
+```javascript
+// row to the table
+tabless.addRow({
+  name: 'Ron',
+  lastname: 'Jenkins',
+  age: 22,
+}, true); //second parameter is true, so the new row will be added at the beginning of the table. 
+
+```
 #### Implement tabless in you environment
 
 > :warning: It's core version of tabless, ready to use implementations of tabless in e.g. React, Vue will be avaiable soon.
 
 Override `renderWay` function in your Tabless instance with your implementation. 
 
-**renderWay** recives as param 2D Array with formated data ready to be displayed in table. 
+**renderWay** recives as param array with of TableRow objects (which store row id and array of cells in this row). Cells are object that store formated data ready to be displayed in table and their className (column dependent).  
 
-Top-level array (stores rows) is filled with arrays, which stores stores cell value and config of the cell. 
+**First** element of that array is headers row.
 
-**First** element of top-level array is array with headers.
-
+###### Table Row Object: 
+**number** `absoluteId` : stores absoluteId of row (absolute id is index of that row in source data Array, for headers row it have value of '-1').      
+**array** `cells` : array of Cells object.
 ###### Cell Object: 
-**string** `value` : value of cell.  
-**string** `className` : cell class name.  
+**string** `value` : value of cell.    
+**string** `className` : cell class name.   
+
 
 **renderWay** should return ready to display table of any desired type.
-
 
 #### Example of renderWay:
 Code below is meant to work in browser environment.
@@ -143,35 +159,33 @@ tabless.renderWay = (data) => {
   const tableHead = document.createElement('thead');
   const tableBody = document.createElement('tbody');
 
-  const headersRow = document.createElement('tr');
+  data.forEach(({cells}, i)=>{
+    let elementType = 'td';
 
-  //First element is headers array
-  data[0].forEach((v, i)=>{
-    const headerElement = document.createElement('th');
-    headerElement.innerText = v.value;
-    if(v.className){
-      headerElement.classList.add(v.className)
+    if(i === 0){ // render first object as table header
+      elementType = 'th';
     }
-    headersRow.append(headerElement)
-  });
-  
-  data.forEach((v, i)=>{
-    if(i === 0) return;
 
-    const dataRow = document.createElement('tr');
-    
-    for (const property in v) {
-      const field = document.createElement('td');
-      field.innerHTML = v[property].value;
-      if(v[property].className){
-        field.classList.add(v[property].className);
+    const rowElement = document.createElement('tr');
+
+    cells.forEach(({value, className})=>{
+      const cell = document.createElement(elementType); //th or td
+
+      cell.innerHTML = value;
+
+      if(className){
+        cell.classList.add(className);
       }
-      dataRow.append(field);
+      rowElement.append(cell);
+    });
+
+    if(i === 0){ //put header into thead element 
+      tableHead.append(rowElement);
+    }else{
+      tableBody.append(rowElement);
     }
-    tableBody.append(dataRow);
   })
 
-  tableHead.append(headersRow);
   tableElement.append(tableHead);
   tableElement.append(tableBody);
 

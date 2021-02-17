@@ -1,26 +1,4 @@
-const data = [
-  {
-    name: 'Hubert', 
-    lastname: 'Dziuda', 
-    age: 20,
-  },
-  {
-    name: 'John',
-    lastname: 'Snow',
-    age: 29,
-  },
-  {
-    name: 'Tom', 
-    lastname: 'Williams', 
-    age: 19,
-  },
-  {
-    name: 'Mark',
-    lastname: 'Brown', 
-    age: 24,
-  }
-];
-
+//Define columns of table
 const columns = [ 
   {
     columnName: 'Name:', // Display name of column
@@ -44,57 +22,90 @@ const columns = [
   }
 ];
 
+//Data of table
+const data = [
+  {
+    name: 'Hubert', 
+    lastname: 'Dziuda', 
+    age: 20,
+  },
+  {
+    name: 'John',
+    lastname: 'Snow',
+    age: 29,
+  },
+  {
+    //Empty object will be skipped
+  },
+  'Not an object :<' //Non-objects also :) 
+  ,
+  {
+    name: 'Tom', 
+    lastname: 'Williams', 
+    age: 19,
+  },
+  {
+    name: 'Mark',
+    lastname: 'Brown', 
+    age: 24,
+  }
+];
 
 // config object used to create Tabless instance
 const config = {
   addOrdinalNumber: true,
   ordinalHeader: 'Index:',
 }
-
+// create instance of Tabless
 const tabless = new Tabless(columns, data, config);
 
 //Configuration of already created Tabless instance
 tabless.setConfig({
   orderBy: 'age',
   descending: true,
-})
+});
+
+// row to the table
+tabless.addRow({
+  name: 'Ron',
+  lastname: 'Jenkins',
+  age: 22,
+});
 
 tabless.renderWay = (data) => {
   const tableElement = document.createElement('table');
   const tableHead = document.createElement('thead');
   const tableBody = document.createElement('tbody');
 
-  const headersRow = document.createElement('tr');
-
-  data[0].forEach((v, i)=>{
-    const headerElement = document.createElement('th');
-    headerElement.innerText = v.value;
-    if(v.className){
-      headerElement.classList.add(v.className)
+  data.forEach(({cells}, i)=>{
+    let elementType = 'td'; 
+    if(i === 0){ // render first object as table header
+      elementType = 'th';
     }
-    headersRow.append(headerElement)
-  });
 
-  data.forEach((v, i)=>{
-    if(i === 0) return;
+    const rowElement = document.createElement('tr');
 
-    const dataRow = document.createElement('tr');
-    
-    for (const property in v) {
-      const field = document.createElement('td');
-      field.innerHTML = v[property].value;
-      if(v[property].className){
-        field.classList.add(v[property].className);
+    cells.forEach(({value, className})=>{
+      const cell = document.createElement(elementType); //th or td
+
+      cell.innerHTML = value;
+
+      if(className){
+        cell.classList.add(className);
       }
-      dataRow.append(field);
+      rowElement.append(cell);
+    });
+
+    if(i === 0){ //put header into thead element 
+      tableHead.append(rowElement);
+    }else{
+      tableBody.append(rowElement);
     }
-    tableBody.append(dataRow);
   })
 
-
-  tableHead.append(headersRow);
   tableElement.append(tableHead);
   tableElement.append(tableBody);
+
   return tableElement;
 }
 

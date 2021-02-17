@@ -8,6 +8,10 @@ export interface Cell {
     value: string;
     className: string;
 }
+export interface TableRow {
+    absoluteId: number;
+    cells: Cell[];
+}
 export interface TableConfig {
     addOrdinalNumber?: boolean;
     ordinalHeader?: string;
