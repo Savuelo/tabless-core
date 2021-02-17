@@ -1,4 +1,4 @@
-import { isFunction } from './utilities.js';
+import { isFunction } from './utilities';
 import { ColumnConfig, Cell  } from '../models/Interfaces';
 
 export const createDataCell  = (row: any, columnConfig: ColumnConfig) : Cell => {

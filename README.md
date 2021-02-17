@@ -9,6 +9,10 @@ $ npm install @savuelo/tabless-core
 ```javascript
 import Tabless from '@savuelo/tabless-core';
 ```
+OR
+```html
+<script src="/bundle/tabless.js"></script>
+```
 ## Running example
 
 1: Install dependecies

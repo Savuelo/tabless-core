@@ -1,8 +1,7 @@
 import { ColumnConfig, TableConfig, Cell } from './models/Interfaces';
-import { createDataCell, createCellFromRawData } from './utilities/CreatingCells.js';
-import { sortData } from './utilities/Sorting.js';
-import { generateTableBody } from './utilities/tableGenerating/TableBody.js';
-import { generateHeaders } from './utilities/tableGenerating/TableHeaders.js';
+import { sortData } from './utilities/Sorting';
+import { generateTableBody } from './utilities/tableGenerating/TableBody';
+import { generateHeaders } from './utilities/tableGenerating/TableHeaders';
 
 export default class Tabless {
   columnsConfig: ColumnConfig[]; //Configs of every column that table have 
@@ -20,6 +19,8 @@ export default class Tabless {
   constructor(columnsConfig: ColumnConfig[], data: any[], config: TableConfig = {} ) {
     this.columnsConfig = columnsConfig;
     this.data = data;
+
+    console.log("eeeeqeqefww");
 
     this.setConfig(config);
   }

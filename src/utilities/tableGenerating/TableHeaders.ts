@@ -1,5 +1,5 @@
 import { ColumnConfig, TableConfig, Cell } from './../../models/Interfaces';
-import { createCellFromRawData } from './../CreatingCells.js';
+import { createCellFromRawData } from './../CreatingCells';
 
 /*
   returns an array of cells of header row;

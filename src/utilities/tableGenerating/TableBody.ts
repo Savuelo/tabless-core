@@ -1,5 +1,5 @@
 import { ColumnConfig, TableConfig, Cell } from './../../models/Interfaces';
-import { createDataCell, createCellFromRawData } from './../CreatingCells.js';
+import { createDataCell, createCellFromRawData } from './../CreatingCells';
 
 /*
   Prepares data ready to be mapped to table element;
