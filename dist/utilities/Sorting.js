@@ -1,4 +1,7 @@
-export var sortData = function (data, orderBy) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sortData = void 0;
+var sortData = function (data, orderBy) {
     var sortedData = data.sort(function (a, b) {
         var _a, _b;
         //Values used to compare;
@@ -24,3 +27,4 @@ export var sortData = function (data, orderBy) {
     });
     return sortedData;
 };
+exports.sortData = sortData;

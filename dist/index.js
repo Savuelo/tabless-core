@@ -1,3 +1,4 @@
+"use strict";
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -9,9 +10,10 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { sortData } from './utilities/Sorting';
-import { generateTableBody } from './utilities/tableGenerating/TableBody';
-import { generateHeaders } from './utilities/tableGenerating/TableHeaders';
+Object.defineProperty(exports, "__esModule", { value: true });
+var Sorting_1 = require("./utilities/Sorting");
+var TableBody_1 = require("./utilities/tableGenerating/TableBody");
+var TableHeaders_1 = require("./utilities/tableGenerating/TableHeaders");
 var Tabless = /** @class */ (function () {
     function Tabless(columnsConfig, data, config) {
         var _this = this;
@@ -51,7 +53,7 @@ var Tabless = /** @class */ (function () {
                 var validIndex = columnsConfig.some(function (e) { return e.columnIndex === orderIndex_1; });
                 //if matching column has been found; sort data 
                 if (validIndex) {
-                    data = sortData(data, orderIndex_1);
+                    data = Sorting_1.sortData(data, orderIndex_1);
                     //sort methods by default sorts data ascending.
                     //If descending option has been choosen, reverse data;
                     if (_this.config.descending) {
@@ -60,9 +62,9 @@ var Tabless = /** @class */ (function () {
                 }
             }
             //Create headers row;    
-            var headers = generateHeaders(columnsConfig, config); // array with column names;
+            var headers = TableHeaders_1.generateHeaders(columnsConfig, config); // array with column names;
             //create tableBody rows;
-            var table = generateTableBody(columnsConfig, data, config);
+            var table = TableBody_1.generateTableBody(columnsConfig, data, config);
             //headers are always the first element of the table array;
             if (!config.headerless) {
                 table.unshift(headers);
@@ -83,4 +85,4 @@ var Tabless = /** @class */ (function () {
     };
     return Tabless;
 }());
-export default Tabless;
+exports.default = Tabless;
