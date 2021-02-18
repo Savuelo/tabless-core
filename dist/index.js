@@ -85,6 +85,12 @@ var Tabless = /** @class */ (function () {
         this.config = __assign(__assign({}, this.config), newConfig);
     };
     /*
+      Replace current data object
+    */
+    Tabless.prototype.replaceData = function (newData) {
+        this.data = utilities_1.removeInvalidElements(newData);
+    };
+    /*
       Add new column(s) to the table
     */
     Tabless.prototype.addColumns = function (newColumns) {
