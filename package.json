@@ -1,7 +1,7 @@
 {
   "name": "@savuelo/tabless-core",
-  "version": "0.5.0",
-  "description": "",
+  "version": "0.6.0",
+  "description": "Format raw data into ease to handle table data.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

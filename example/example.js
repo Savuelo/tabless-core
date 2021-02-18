@@ -16,10 +16,6 @@ const columns = [
       return value.toUpperCase();
     }
   },
-  {
-    columnName: 'Age:',
-    columnIndex: 'age',
-  }
 ];
 
 //Data of table
@@ -58,6 +54,13 @@ const config = {
 }
 // create instance of Tabless
 const tabless = new Tabless(columns, data, config);
+
+tabless.addColumn({
+  columnName: 'Age:',
+  columnIndex: 'age',
+  columnId: 'ageColumn',
+});
+
 
 //Configuration of already created Tabless instance
 tabless.setConfig({

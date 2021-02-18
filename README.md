@@ -59,6 +59,29 @@ const columns = [
 ###### Optional:
 **function** `columnFormat` : Function used to format data in the column.  
 **string** `columnClassName` : Class name of the column.  
+**string | number** `columnId` : User defined id of column, should be unique. 
+
+#### Adding new column
+To add a new column to the existing table use `addColumn` method. 
+
+```javascript
+tabless.addColumn({
+  columnName: 'Age:',
+  columnIndex: 'age',
+  columnId: 'ageColumn',
+});
+```
+
+#### Removing column
+You can remove columny by its `columnId` or by number in array (counting from 0, from left to right excluding ordinary column, in output table).
+
+```javascript
+tabless.removeColumnById('ageColumn');
+//OR 
+tabless.removeColumnsByIndex(2);
+//OR
+tabless.removeColumnsByIndex([0,1,2]);
+```
 
 #### Example data
 Note that empty objects will be skipped during generation of output Table.
@@ -131,14 +154,14 @@ tabless.addRow({
 ```
 
 #### Removing row(s)
-To remove row from array pass row's absolute id into `removeRow` method.
+To remove row from array pass row's absolute id into `removeRows` method.
 Be careful! This action may afftect absolute ids of other rows. You should re-render table to obtain actual absolute ids.
 ```javascript
-tabless.removeRow(2);
+tabless.removeRows(2);
 ```
-To remove multiple rows at once (do not use `removeRow` method to achive this!) use `removeMultipleRows`. It filters existing table array and excludes matching items. It affects absolute ids, so re-render table.
+To remove multiple rows at once just pass an array as param.
 ```javascript
-tabless.removeMultipleRows([0, 1, 2, 3]);
+tabless.removeRows([0, 1, 2, 3]);
 ```
 #### Implement tabless in you environment
 

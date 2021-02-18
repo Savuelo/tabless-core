@@ -5,10 +5,12 @@ export default class Tabless {
     config: TableConfig;
     constructor(columnsConfig: ColumnConfig[], data: any[], config?: TableConfig);
     setConfig(newConfig: TableConfig): void;
+    addColumn(newColumn: ColumnConfig): void;
+    removeColumnById(columnIdToRemove: string | number): void;
+    removeColumnsByIndex(indexInArray: number | number[]): void;
     addRow(newRow: any, atBeginning?: boolean): void;
     updateRow(newRowValues: any, rowAbsoluteId: number): void;
-    removeRow(rowAbsoluteId: number): void;
-    removeMultipleRows(rowAbsoluteIds: number[]): void;
+    removeRows(absoluteIds: number[] | number): void;
     renderWay: (_tableArray: TableRow[]) => null;
     render: () => null;
 }

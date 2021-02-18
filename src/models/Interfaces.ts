@@ -3,6 +3,7 @@ export interface ColumnConfig {
   columnIndex: string | number,
   columnFormat?: Function,
   columnClassName?: string,
+  columnId?: number | string,
 }
 export interface Cell { 
   value: string,
