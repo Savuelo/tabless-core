@@ -32,21 +32,50 @@ export default class Tabless {
   }
 
   /*
-    Add new column to the table
+    Replace current data object
   */
-  addColumn(newColumn: ColumnConfig){
-    if(newColumn && newColumn.columnName && newColumn.columnIndex){
-      this.columnsConfig.push(newColumn);
+  replaceData(newData: any){
+    this.data = removeInvalidElements(newData);
+  }
+
+  /*
+    Add new column(s) to the table
+  */
+  addColumns(newColumns: ColumnConfig[] | ColumnConfig){
+    if(!newColumns) return;
+
+    let newColumnsArray: ColumnConfig[] = [];
+
+    if(!Array.isArray(newColumns)){
+      newColumnsArray = [newColumns];
+    }else{
+      newColumnsArray = newColumns;
     }
+
+    newColumnsArray.forEach((element) => {
+      if(element.columnIndex){
+        this.columnsConfig.push(element);
+      }
+    });
   }
   /*
     Remove column by its id (userProvided id)
   */
-  removeColumnById(columnIdToRemove: string | number){
-    if(!columnIdToRemove) return;
+  removeColumnsById(columnIdsToRemove: string | string[] | number | number[]){
+    if(!columnIdsToRemove) return;
 
-    this.columnsConfig = this.columnsConfig.filter(({columnId}, i)=> {
-      return columnId != columnIdToRemove;
+    this.columnsConfig = this.columnsConfig.filter(({columnId})=> {
+
+      if(Array.isArray(columnIdsToRemove)){
+        //If passed an array as param, check if any in in that array is equal with this columnId;
+        //Note that output of some is negated! (> ! <)
+        return !columnIdsToRemove.some((idToRemove: any)=>{
+          return columnId == idToRemove;
+        })
+      }else{
+        //If passed just number or string compare and remove.
+        return columnId != columnIdsToRemove;
+      }
     })
   }
   /*
@@ -60,12 +89,21 @@ export default class Tabless {
     Add new row to existing table;
     if new row will be added at beggining it will affect other rows absolute id
   */
-  addRow(newRow: any, atBeginning: boolean = false){
-    if(isObjectValid(newRow)){
-      if(atBeginning){
-        this.data.unshift(newRow);
+  addRows(newRows: any | any[], atBeginning: boolean = false){
+    if(isObjectValid(newRows)){
+      let rowsArray: any[] = [];
+
+      //Adjust type
+      if(!Array.isArray(newRows)){
+        rowsArray = [newRows];
       }else{
-        this.data.push(newRow);
+        rowsArray = newRows;
+      }
+
+      if(atBeginning){
+        this.data.unshift(...rowsArray);
+      }else{
+        this.data.push(...rowsArray);
       }
     }
   }

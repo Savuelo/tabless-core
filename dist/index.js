@@ -11,13 +11,15 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Sorting_1 = require("./utilities/Sorting");
-var TableBody_1 = require("./utilities/tableGenerating/TableBody");
-var TableHeaders_1 = require("./utilities/tableGenerating/TableHeaders");
+var Sorting_1 = require("./util/Sorting");
+var TableBody_1 = require("./util/tableGenerating/TableBody");
+var TableHeaders_1 = require("./util/tableGenerating/TableHeaders");
+var utilities_1 = require("./util/utilities");
 var Tabless = /** @class */ (function () {
     function Tabless(columnsConfig, data, config) {
         var _this = this;
         if (config === void 0) { config = {}; }
+        this.columnsConfig = []; //Configs of every column that table have 
         this.config = {
             addOrdinalNumber: false,
             ordinalHeader: 'No.',
@@ -40,7 +42,6 @@ var Tabless = /** @class */ (function () {
           Also passes to method values from this class;
           that allows to pass values as props when renderWay is overrieded by
           other method;
-      
         */
         this.render = function () {
             var columnsConfig = _this.columnsConfig;
@@ -62,19 +63,19 @@ var Tabless = /** @class */ (function () {
                 }
             }
             //Create headers row;    
-            var headers = TableHeaders_1.generateHeaders(columnsConfig, config); // array with column names;
+            var header = TableHeaders_1.generateHeaders(columnsConfig, config); // array with column names;
             //create tableBody rows;
             var table = TableBody_1.generateTableBody(columnsConfig, data, config);
-            //headers are always the first element of the table array;
+            // Skip adding headers if table is going to be headerlesss
             if (!config.headerless) {
-                table.unshift(headers);
+                //headers are always the first element of the table array; 
+                table.unshift(header);
             }
             // table.unshift(headers)
             return _this.renderWay(table);
         };
         this.columnsConfig = columnsConfig;
-        this.data = data;
-        console.log("eeeeqeqefww");
+        this.data = utilities_1.removeInvalidElements(data);
         this.setConfig(config);
     }
     /*
@@ -82,6 +83,95 @@ var Tabless = /** @class */ (function () {
     */
     Tabless.prototype.setConfig = function (newConfig) {
         this.config = __assign(__assign({}, this.config), newConfig);
+    };
+    /*
+      Add new column(s) to the table
+    */
+    Tabless.prototype.addColumns = function (newColumns) {
+        var _this = this;
+        if (!newColumns)
+            return;
+        var newColumnsArray = [];
+        if (!Array.isArray(newColumns)) {
+            newColumnsArray = [newColumns];
+        }
+        else {
+            newColumnsArray = newColumns;
+        }
+        newColumnsArray.forEach(function (element) {
+            if (element.columnIndex) {
+                _this.columnsConfig.push(element);
+            }
+        });
+    };
+    /*
+      Remove column by its id (userProvided id)
+    */
+    Tabless.prototype.removeColumnsById = function (columnIdsToRemove) {
+        if (!columnIdsToRemove)
+            return;
+        this.columnsConfig = this.columnsConfig.filter(function (_a) {
+            var columnId = _a.columnId;
+            if (Array.isArray(columnIdsToRemove)) {
+                //If passed an array as param, check if any in in that array is equal with this columnId;
+                //Note that output of some is negated! (> ! <)
+                return !columnIdsToRemove.some(function (idToRemove) {
+                    return columnId == idToRemove;
+                });
+            }
+            else {
+                //If passed just number or string compare and remove.
+                return columnId != columnIdsToRemove;
+            }
+        });
+    };
+    /*
+      Remove column by its index in array;
+    */
+    Tabless.prototype.removeColumnsByIndex = function (indexInArray) {
+        this.columnsConfig = utilities_1.removeRequestedIndexes(this.columnsConfig, indexInArray);
+    };
+    /*
+      Add new row to existing table;
+      if new row will be added at beggining it will affect other rows absolute id
+    */
+    Tabless.prototype.addRows = function (newRows, atBeginning) {
+        var _a, _b;
+        if (atBeginning === void 0) { atBeginning = false; }
+        if (utilities_1.isObjectValid(newRows)) {
+            var rowsArray = [];
+            //Adjust type
+            if (!Array.isArray(newRows)) {
+                rowsArray = [newRows];
+            }
+            else {
+                rowsArray = newRows;
+            }
+            if (atBeginning) {
+                (_a = this.data).unshift.apply(_a, rowsArray);
+            }
+            else {
+                (_b = this.data).push.apply(_b, rowsArray);
+            }
+        }
+    };
+    /*
+      Updates existing row with new data;
+    */
+    Tabless.prototype.updateRow = function (newRowValues, rowAbsoluteId) {
+        if (isNaN(rowAbsoluteId))
+            return;
+        if (rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length) {
+            if (utilities_1.isObjectValid(newRowValues)) {
+                this.data[rowAbsoluteId] = __assign(__assign({}, this.data[rowAbsoluteId]), newRowValues);
+            }
+        }
+    };
+    /*
+      Remove multiple rows at once
+    */
+    Tabless.prototype.removeRows = function (absoluteIds) {
+        this.data = utilities_1.removeRequestedIndexes(this.data, absoluteIds);
     };
     return Tabless;
 }());

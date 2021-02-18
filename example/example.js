@@ -3,10 +3,12 @@ const columns = [
   {
     columnName: 'Name:', // Display name of column
     columnIndex: 'name', // index/property of object with data
+    columnId: 'nameColumn', //Optional columnId, used to edit or delete specific column
   },
   {
     columnName: 'Lastname:',
     columnIndex: 'lastname',
+    columnId: 'lastnameColumn',
 
     /*
       Format function what will be used to format data in column
@@ -55,12 +57,11 @@ const config = {
 // create instance of Tabless
 const tabless = new Tabless(columns, data, config);
 
-tabless.addColumn({
+tabless.addColumns({
   columnName: 'Age:',
   columnIndex: 'age',
   columnId: 'ageColumn',
 });
-
 
 //Configuration of already created Tabless instance
 tabless.setConfig({
@@ -69,7 +70,7 @@ tabless.setConfig({
 });
 
 
-// row to the table
+// add new rows to the table
 tabless.addRows([{
   name: 'Ron',
   lastname: 'Jenkins',
@@ -94,8 +95,6 @@ tabless.renderWay = (data) => {
     console.log(`%c Row ${i}:`, consoleStyles);
     console.log(`absoluteId: ${absoluteId}`);
     console.log(cells);
-
-
 
     let elementType = 'td'; 
     if(i === 0){ // render first object as table header

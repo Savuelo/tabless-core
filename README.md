@@ -53,35 +53,13 @@ const columns = [
 #### Available column config options
 
 ###### Required:
-**string** `columnName` : Name of the column (header name).   
 **string** `columnIndex` : Index or property of data object.  
 
 ###### Optional:
+**string** `columnName` : Name of the column (header name).   
 **function** `columnFormat` : Function used to format data in the column.  
 **string** `columnClassName` : Class name of the column.  
 **string | number** `columnId` : User defined id of column, should be unique. 
-
-#### Adding new column
-To add a new column to the existing table use `addColumn` method. 
-
-```javascript
-tabless.addColumn({
-  columnName: 'Age:',
-  columnIndex: 'age',
-  columnId: 'ageColumn',
-});
-```
-
-#### Removing column
-You can remove columny by its `columnId` or by number in array (counting from 0, from left to right excluding ordinary column, in output table).
-
-```javascript
-tabless.removeColumnById('ageColumn');
-//OR 
-tabless.removeColumnsByIndex(2);
-//OR
-tabless.removeColumnsByIndex([0,1,2]);
-```
 
 #### Example data
 Note that empty objects will be skipped during generation of output Table.
@@ -139,8 +117,44 @@ tabless.setConfig({
 })
 ```
 
-#### Adding new row
-To create new row in existing Tabless instance use `addRow` method. It accepts  2 params: Object with data of the new row, and boolean what decides about putting new row to the start or end of the table. Note that if you are using sorting data in Tabless new row will be sorted as normal row, even if you pass param that puts it on the start of the table.    
+#### Adding new column(s)
+To add a new column to the existing table use `addColumn` method. 
+
+```javascript
+tabless.addColumn({
+  columnName: 'Age:',
+  columnIndex: 'age',
+  columnId: 'ageColumn',
+});
+
+//OR
+
+tabless.addColumns([{
+  columnName: 'Lastname:',
+  columnIndex: 'lastname',
+  columnId: 'lastenameColumn',
+},{
+  columnName: 'Age:',
+  columnIndex: 'age',
+  columnId: 'ageColumn',
+}]);
+```
+
+#### Removing column(s)
+You can remove columny by its `columnId` or by number in array (counting from 0, from left to right excluding ordinary column, in output table).
+
+```javascript
+tabless.removeColumnsById('ageColumn');
+//OR
+tabless.removeColumnsById(['ageColumn', 'nameColumn']);
+//OR 
+tabless.removeColumnsByIndex(2);
+//OR
+tabless.removeColumnsByIndex([0,1,2]);
+```
+
+#### Adding new row(s)
+To create new rows in existing Tabless instance use `addRows` method. It accepts  2 params: Object or array of objects with data of the new rows, and boolean what decides about putting new rows to the start or end of the table. Note that if you are using sorting data in Tabless new row will be sorted as normal row, even if you pass param that puts it on the start of the table.    
 After adding new row you should re-render the table. It may affect absolute id of other rows.
 
 ```javascript
@@ -151,6 +165,17 @@ tabless.addRow({
   age: 22,
 }, true); //second parameter is true, so the new row will be added at the beginning of the table. 
 
+//OR
+
+tabless.addRows([{
+  name: 'Ron',
+  lastname: 'Jenkins',
+  age: 22,
+},{
+  name: 'Lucas',
+  lastname: 'Murphy',
+  age: 33,
+}]);
 ```
 
 #### Removing row(s)
@@ -163,6 +188,11 @@ To remove multiple rows at once just pass an array as param.
 ```javascript
 tabless.removeRows([0, 1, 2, 3]);
 ```
+#### Replacing data object
+```javascript
+//Replace all the existing data with new.
+tabless.replaceData(newData);
+````
 #### Implement tabless in you environment
 
 > :warning: It's core version of tabless, ready to use implementations of tabless in e.g. React, Vue will be avaiable soon.
