@@ -70,18 +70,33 @@ tabless.setConfig({
 
 
 // row to the table
-tabless.addRow({
+tabless.addRows([{
   name: 'Ron',
   lastname: 'Jenkins',
   age: 22,
-});
+},{
+  name: 'Lucas',
+  lastname: 'Murphy',
+  age: 33,
+}]);
 
 tabless.renderWay = (data) => {
+  const consoleStyles = 'font-size: 13px; color: #bada55; background-color: black; padding: 3px';
+  console.log('%c renderWay `data` param:', consoleStyles);
+  console.log(data);
+
   const tableElement = document.createElement('table');
   const tableHead = document.createElement('thead');
   const tableBody = document.createElement('tbody');
 
-  data.forEach(({cells}, i)=>{
+  console.log('%c Rows data (absoluteId and cells array):', consoleStyles);
+  data.forEach(({absoluteId, cells}, i)=>{
+    console.log(`%c Row ${i}:`, consoleStyles);
+    console.log(`absoluteId: ${absoluteId}`);
+    console.log(cells);
+
+
+
     let elementType = 'td'; 
     if(i === 0){ // render first object as table header
       elementType = 'th';
