@@ -2,10 +2,10 @@ import { ColumnConfig, TableConfig, TableRow } from './models/Interfaces';
 import { sortData } from './util/Sorting';
 import { generateTableBody } from './util/tableGenerating/TableBody';
 import { generateHeaders } from './util/tableGenerating/TableHeaders';
-import { isObjectValid, removeInvalidElements } from './util/utilities'
+import { isObjectValid, removeInvalidElements, removeRequestedIndexes } from './util/utilities'
 
 export default class Tabless {
-  columnsConfig: ColumnConfig[]; //Configs of every column that table have 
+  columnsConfig: ColumnConfig[] = []; //Configs of every column that table have 
   data: any[]; //Data displated in column
 
   config: TableConfig = { //Default configuration on Tabless instance;
@@ -20,7 +20,7 @@ export default class Tabless {
   constructor(columnsConfig: ColumnConfig[], data: any[], config: TableConfig = {} ) {
     this.columnsConfig = columnsConfig;
     this.data = removeInvalidElements(data);
-
+    
     this.setConfig(config);
   }
 
@@ -32,15 +32,78 @@ export default class Tabless {
   }
 
   /*
+    Replace current data object
+  */
+  replaceData(newData: any){
+    this.data = removeInvalidElements(newData);
+  }
+
+  /*
+    Add new column(s) to the table
+  */
+  addColumns(newColumns: ColumnConfig[] | ColumnConfig){
+    if(!newColumns) return;
+
+    let newColumnsArray: ColumnConfig[] = [];
+
+    if(!Array.isArray(newColumns)){
+      newColumnsArray = [newColumns];
+    }else{
+      newColumnsArray = newColumns;
+    }
+
+    newColumnsArray.forEach((element) => {
+      if(element.columnIndex){
+        this.columnsConfig.push(element);
+      }
+    });
+  }
+  /*
+    Remove column by its id (userProvided id)
+  */
+  removeColumnsById(columnIdsToRemove: string | string[] | number | number[]){
+    if(!columnIdsToRemove) return;
+
+    this.columnsConfig = this.columnsConfig.filter(({columnId})=> {
+
+      if(Array.isArray(columnIdsToRemove)){
+        //If passed an array as param, check if any in in that array is equal with this columnId;
+        //Note that output of some is negated! (> ! <)
+        return !columnIdsToRemove.some((idToRemove: any)=>{
+          return columnId == idToRemove;
+        })
+      }else{
+        //If passed just number or string compare and remove.
+        return columnId != columnIdsToRemove;
+      }
+    })
+  }
+  /*
+    Remove column by its index in array;
+  */
+  removeColumnsByIndex(indexInArray: number | number[]){
+    this.columnsConfig = removeRequestedIndexes(this.columnsConfig, indexInArray);
+  }
+
+  /*
     Add new row to existing table;
     if new row will be added at beggining it will affect other rows absolute id
   */
-  addRow(newRow: any, atBeginning: boolean = false){
-    if(isObjectValid(newRow)){
-      if(atBeginning){
-        this.data.unshift(newRow);
+  addRows(newRows: any | any[], atBeginning: boolean = false){
+    if(isObjectValid(newRows)){
+      let rowsArray: any[] = [];
+
+      //Adjust type
+      if(!Array.isArray(newRows)){
+        rowsArray = [newRows];
       }else{
-        this.data.push(newRow);
+        rowsArray = newRows;
+      }
+
+      if(atBeginning){
+        this.data.unshift(...rowsArray);
+      }else{
+        this.data.push(...rowsArray);
       }
     }
   }
@@ -58,33 +121,10 @@ export default class Tabless {
   }
 
   /*
-    Remove row from table, may affect other rows absolute id 
+    Remove multiple rows at once
   */
-  removeRow(rowAbsoluteId: number){
-    if(isNaN(rowAbsoluteId)) return;
-    if(rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length){
-      this.data.slice(rowAbsoluteId, 1);
-    }
-  }
-
-  /*
-    
-  */
-  removeMultipleRows(rowAbsoluteIds: number[]){
-    this.data = this.data.filter((v, rowId: number) => {
-      let match = false; 
-
-      rowAbsoluteIds.forEach((idToRemove)=> {
-        if(idToRemove < 0 || isNaN(idToRemove)) return; //skip negative numbers
-
-        if(rowId === idToRemove){
-          match = true;
-        }
-      })
-
-      // Every id that match with id to remove will be removed
-      return !match;
-    })
+  removeRows(absoluteIds: number[] | number){
+    this.data = removeRequestedIndexes(this.data, absoluteIds);
   }
 
   /*

@@ -19,6 +19,7 @@ var Tabless = /** @class */ (function () {
     function Tabless(columnsConfig, data, config) {
         var _this = this;
         if (config === void 0) { config = {}; }
+        this.columnsConfig = []; //Configs of every column that table have 
         this.config = {
             addOrdinalNumber: false,
             ordinalHeader: 'No.',
@@ -84,17 +85,79 @@ var Tabless = /** @class */ (function () {
         this.config = __assign(__assign({}, this.config), newConfig);
     };
     /*
+      Replace current data object
+    */
+    Tabless.prototype.replaceData = function (newData) {
+        this.data = utilities_1.removeInvalidElements(newData);
+    };
+    /*
+      Add new column(s) to the table
+    */
+    Tabless.prototype.addColumns = function (newColumns) {
+        var _this = this;
+        if (!newColumns)
+            return;
+        var newColumnsArray = [];
+        if (!Array.isArray(newColumns)) {
+            newColumnsArray = [newColumns];
+        }
+        else {
+            newColumnsArray = newColumns;
+        }
+        newColumnsArray.forEach(function (element) {
+            if (element.columnIndex) {
+                _this.columnsConfig.push(element);
+            }
+        });
+    };
+    /*
+      Remove column by its id (userProvided id)
+    */
+    Tabless.prototype.removeColumnsById = function (columnIdsToRemove) {
+        if (!columnIdsToRemove)
+            return;
+        this.columnsConfig = this.columnsConfig.filter(function (_a) {
+            var columnId = _a.columnId;
+            if (Array.isArray(columnIdsToRemove)) {
+                //If passed an array as param, check if any in in that array is equal with this columnId;
+                //Note that output of some is negated! (> ! <)
+                return !columnIdsToRemove.some(function (idToRemove) {
+                    return columnId == idToRemove;
+                });
+            }
+            else {
+                //If passed just number or string compare and remove.
+                return columnId != columnIdsToRemove;
+            }
+        });
+    };
+    /*
+      Remove column by its index in array;
+    */
+    Tabless.prototype.removeColumnsByIndex = function (indexInArray) {
+        this.columnsConfig = utilities_1.removeRequestedIndexes(this.columnsConfig, indexInArray);
+    };
+    /*
       Add new row to existing table;
       if new row will be added at beggining it will affect other rows absolute id
     */
-    Tabless.prototype.addRow = function (newRow, atBeginning) {
+    Tabless.prototype.addRows = function (newRows, atBeginning) {
+        var _a, _b;
         if (atBeginning === void 0) { atBeginning = false; }
-        if (utilities_1.isObjectValid(newRow)) {
-            if (atBeginning) {
-                this.data.unshift(newRow);
+        if (utilities_1.isObjectValid(newRows)) {
+            var rowsArray = [];
+            //Adjust type
+            if (!Array.isArray(newRows)) {
+                rowsArray = [newRows];
             }
             else {
-                this.data.push(newRow);
+                rowsArray = newRows;
+            }
+            if (atBeginning) {
+                (_a = this.data).unshift.apply(_a, rowsArray);
+            }
+            else {
+                (_b = this.data).push.apply(_b, rowsArray);
             }
         }
     };
@@ -111,31 +174,10 @@ var Tabless = /** @class */ (function () {
         }
     };
     /*
-      Remove row from table, may affect other rows absolute id
+      Remove multiple rows at once
     */
-    Tabless.prototype.removeRow = function (rowAbsoluteId) {
-        if (isNaN(rowAbsoluteId))
-            return;
-        if (rowAbsoluteId >= 0 && rowAbsoluteId < this.data.length) {
-            this.data.slice(rowAbsoluteId, 1);
-        }
-    };
-    /*
-      
-    */
-    Tabless.prototype.removeMultipleRows = function (rowAbsoluteIds) {
-        this.data = this.data.filter(function (v, rowId) {
-            var match = false;
-            rowAbsoluteIds.forEach(function (idToRemove) {
-                if (idToRemove < 0 || isNaN(idToRemove))
-                    return; //skip negative numbers
-                if (rowId === idToRemove) {
-                    match = true;
-                }
-            });
-            // Every id that match with id to remove will be removed
-            return !match;
-        });
+    Tabless.prototype.removeRows = function (absoluteIds) {
+        this.data = utilities_1.removeRequestedIndexes(this.data, absoluteIds);
     };
     return Tabless;
 }());

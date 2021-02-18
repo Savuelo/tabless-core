@@ -1,8 +1,9 @@
 export interface ColumnConfig {
-    columnName: string;
     columnIndex: string | number;
+    columnName?: string;
     columnFormat?: Function;
     columnClassName?: string;
+    columnId?: number | string;
 }
 export interface Cell {
     value: string;
