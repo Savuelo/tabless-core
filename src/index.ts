@@ -2,11 +2,11 @@ import { ColumnConfig, TableConfig, TableRow } from './models/Interfaces';
 import { sortData } from './util/Sorting';
 import { generateTableBody } from './util/tableGenerating/TableBody';
 import { generateHeaders } from './util/tableGenerating/TableHeaders';
-import { isObjectValid, removeInvalidElements, removeRequestedIndexes } from './util/utilities'
+import { isColumnConfigValid, isObjectValid, removeInvalidColumns, removeInvalidRows, removeRequestedIndexes } from './util/utilities'
 
 export default class Tabless {
   columnsConfig: ColumnConfig[] = []; //Configs of every column that table have 
-  data: any[]; //Data displated in column
+  data: any[] = []; //Data displated in column
 
   config: TableConfig = { //Default configuration on Tabless instance;
     addOrdinalNumber: false,
@@ -17,10 +17,10 @@ export default class Tabless {
     headerless: false,
   };
 
-  constructor(columnsConfig: ColumnConfig[], data: any[], config: TableConfig = {} ) {
-    this.columnsConfig = columnsConfig;
-    this.data = removeInvalidElements(data);
-    
+  constructor(columnsConfig: ColumnConfig[] = [], data: any[] = [], config: TableConfig = {} ) {
+    this.columnsConfig = removeInvalidColumns(columnsConfig);
+    this.data = removeInvalidRows(data);
+
     this.setConfig(config);
   }
 
@@ -32,10 +32,30 @@ export default class Tabless {
   }
 
   /*
+    Return basic params of tabless
+  */
+  getColumns() { 
+    return this.columnsConfig;
+  }
+  getData() {
+    return this.data;
+  }
+
+
+  /*
+    Replace current columns config with new columns config set
+  */
+  replaceColumns(newColumnsSet: ColumnConfig[]){
+    if(newColumnsSet && Array.isArray(newColumnsSet)){
+      this.columnsConfig = removeInvalidColumns(newColumnsSet);
+    }
+  }
+
+  /*
     Replace current data object
   */
   replaceData(newData: any){
-    this.data = removeInvalidElements(newData);
+    this.data = removeInvalidRows(newData);
   }
 
   /*
@@ -46,6 +66,7 @@ export default class Tabless {
 
     let newColumnsArray: ColumnConfig[] = [];
 
+    //Check is newColumns array or no
     if(!Array.isArray(newColumns)){
       newColumnsArray = [newColumns];
     }else{
@@ -53,7 +74,7 @@ export default class Tabless {
     }
 
     newColumnsArray.forEach((element) => {
-      if(element.columnIndex){
+      if(isColumnConfigValid(element)){
         this.columnsConfig.push(element);
       }
     });
@@ -153,7 +174,7 @@ export default class Tabless {
       const orderIndex = this.config.orderBy;
 
       //Find column by witch table will be sorted;
-      const validIndex = columnsConfig.some(e => e.columnIndex === orderIndex)
+      const validIndex = columnsConfig.some(e => e && e.columnIndex === orderIndex)
 
       //if matching column has been found; sort data 
       if(validIndex){

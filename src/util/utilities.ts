@@ -12,8 +12,21 @@ export const isObjectEmpty = (object: any) => {
 export const isObjectValid = (object: any) => { 
   return object && !isObjectEmpty(object) && typeof object === 'object';
 }
+export const isColumnConfigValid = (column: ColumnConfig) => {
+  return isObjectValid(column) && column.columnIndex && column.columnIndex !== '';
+}
+
+//Remove invalid columns config from array, used in constructor or changing some columns
+export const removeInvalidColumns = (columns: ColumnConfig[]) : ColumnConfig[] => {
+  if(!columns || !Array.isArray(columns)) return [];
+
+  return columns.filter((column) => {
+    return isColumnConfigValid(column);
+  })
+}
+
 //Remove invalid rows from data object
-export const removeInvalidElements = (array: any) :any => {
+export const removeInvalidRows = (array: any) :any => {
   return array.filter((object:any)=>{
     return isObjectValid(object);
   })

@@ -37,6 +37,8 @@ export function generateTableBody(columnsConfig: ColumnConfig[], data: any[], co
 
     //  for loop; calls for every column in table (in specific row)
     columnsConfig.forEach((columnConfig: ColumnConfig)=>{
+      if(!columnConfig) return;
+      
       const cell: Cell = createDataCell(sourceObject, columnConfig)
       row.cells.push(cell);
     })

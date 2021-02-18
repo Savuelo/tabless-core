@@ -192,7 +192,7 @@ tabless.removeRows([0, 1, 2, 3]);
 ```javascript
 //Replace all the existing data with new.
 tabless.replaceData(newData);
-````
+```
 #### Implement tabless in you environment
 
 > :warning: It's core version of tabless, ready to use implementations of tabless in e.g. React, Vue will be avaiable soon.
@@ -260,4 +260,15 @@ tabless.renderWay = (data) => {
 To execute code, call `render` method of your **Tabless** instance
 ```javascript
 document.getElementById('id-of-element').append(tabless.render());
+```
+
+
+#### Other methods:
+```javascript
+//Replace all columns with new ones.
+tabless.replaceColumns(columns);
+
+//Return unformated data and columns list with config.
+tabless.getColumns();
+tabless.getData();
 ```

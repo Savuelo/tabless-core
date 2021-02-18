@@ -19,8 +19,10 @@ function generateHeaders(columnsConfig, config) {
         header.cells.push(ordinaryHeaderCell);
     }
     //create header cell
-    columnsConfig.forEach(function (_a) {
-        var columnName = _a.columnName, columnClassName = _a.columnClassName;
+    columnsConfig.forEach(function (e) {
+        if (!e)
+            return;
+        var columnName = e.columnName, columnClassName = e.columnClassName;
         var headerCell = CreatingCells_1.createCellFromRawData(columnName, columnClassName);
         header.cells.push(headerCell);
     });

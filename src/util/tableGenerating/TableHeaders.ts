@@ -20,7 +20,10 @@ export function generateHeaders(columnsConfig: ColumnConfig[], config: TableConf
   }
 
   //create header cell
-  columnsConfig.forEach(({columnName, columnClassName})=>{
+  columnsConfig.forEach((e)=>{
+    if(!e) return; 
+    
+    const {columnName, columnClassName} = e;
     const headerCell: Cell = createCellFromRawData(columnName, columnClassName);
     header.cells.push(headerCell);
   }) 

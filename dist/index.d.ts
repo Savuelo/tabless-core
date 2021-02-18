@@ -3,8 +3,11 @@ export default class Tabless {
     columnsConfig: ColumnConfig[];
     data: any[];
     config: TableConfig;
-    constructor(columnsConfig: ColumnConfig[], data: any[], config?: TableConfig);
+    constructor(columnsConfig?: ColumnConfig[], data?: any[], config?: TableConfig);
     setConfig(newConfig: TableConfig): void;
+    getColumns(): ColumnConfig[];
+    getData(): any[];
+    replaceColumns(newColumnsSet: ColumnConfig[]): void;
     replaceData(newData: any): void;
     addColumns(newColumns: ColumnConfig[] | ColumnConfig): void;
     removeColumnsById(columnIdsToRemove: string | string[] | number | number[]): void;

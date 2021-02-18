@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeRequestedIndexes = exports.removeInvalidElements = exports.isObjectValid = exports.isObjectEmpty = exports.isFunction = void 0;
+exports.removeRequestedIndexes = exports.removeInvalidRows = exports.removeInvalidColumns = exports.isColumnConfigValid = exports.isObjectValid = exports.isObjectEmpty = exports.isFunction = void 0;
 /*
   Checks is variable function
   also returns a false if variable is undefined
@@ -17,13 +17,26 @@ var isObjectValid = function (object) {
     return object && !exports.isObjectEmpty(object) && typeof object === 'object';
 };
 exports.isObjectValid = isObjectValid;
+var isColumnConfigValid = function (column) {
+    return exports.isObjectValid(column) && column.columnIndex && column.columnIndex !== '';
+};
+exports.isColumnConfigValid = isColumnConfigValid;
+//Remove invalid columns config from array, used in constructor or changing some columns
+var removeInvalidColumns = function (columns) {
+    if (!columns || !Array.isArray(columns))
+        return [];
+    return columns.filter(function (column) {
+        return exports.isColumnConfigValid(column);
+    });
+};
+exports.removeInvalidColumns = removeInvalidColumns;
 //Remove invalid rows from data object
-var removeInvalidElements = function (array) {
+var removeInvalidRows = function (array) {
     return array.filter(function (object) {
         return exports.isObjectValid(object);
     });
 };
-exports.removeInvalidElements = removeInvalidElements;
+exports.removeInvalidRows = removeInvalidRows;
 //Remove requested indexes from columns or rows;
 var removeRequestedIndexes = function (array, indexes) {
     if (indexes === undefined || indexes === null || !array) {

@@ -18,8 +18,11 @@ var utilities_1 = require("./util/utilities");
 var Tabless = /** @class */ (function () {
     function Tabless(columnsConfig, data, config) {
         var _this = this;
+        if (columnsConfig === void 0) { columnsConfig = []; }
+        if (data === void 0) { data = []; }
         if (config === void 0) { config = {}; }
         this.columnsConfig = []; //Configs of every column that table have 
+        this.data = []; //Data displated in column
         this.config = {
             addOrdinalNumber: false,
             ordinalHeader: 'No.',
@@ -51,7 +54,7 @@ var Tabless = /** @class */ (function () {
             if (_this.config.orderBy !== undefined) {
                 var orderIndex_1 = _this.config.orderBy;
                 //Find column by witch table will be sorted;
-                var validIndex = columnsConfig.some(function (e) { return e.columnIndex === orderIndex_1; });
+                var validIndex = columnsConfig.some(function (e) { return e && e.columnIndex === orderIndex_1; });
                 //if matching column has been found; sort data 
                 if (validIndex) {
                     data = Sorting_1.sortData(data, orderIndex_1);
@@ -74,8 +77,8 @@ var Tabless = /** @class */ (function () {
             // table.unshift(headers)
             return _this.renderWay(table);
         };
-        this.columnsConfig = columnsConfig;
-        this.data = utilities_1.removeInvalidElements(data);
+        this.columnsConfig = utilities_1.removeInvalidColumns(columnsConfig);
+        this.data = utilities_1.removeInvalidRows(data);
         this.setConfig(config);
     }
     /*
@@ -85,10 +88,27 @@ var Tabless = /** @class */ (function () {
         this.config = __assign(__assign({}, this.config), newConfig);
     };
     /*
+      Return basic params of tabless
+    */
+    Tabless.prototype.getColumns = function () {
+        return this.columnsConfig;
+    };
+    Tabless.prototype.getData = function () {
+        return this.data;
+    };
+    /*
+      Replace current columns config with new columns config set
+    */
+    Tabless.prototype.replaceColumns = function (newColumnsSet) {
+        if (newColumnsSet && Array.isArray(newColumnsSet)) {
+            this.columnsConfig = utilities_1.removeInvalidColumns(newColumnsSet);
+        }
+    };
+    /*
       Replace current data object
     */
     Tabless.prototype.replaceData = function (newData) {
-        this.data = utilities_1.removeInvalidElements(newData);
+        this.data = utilities_1.removeInvalidRows(newData);
     };
     /*
       Add new column(s) to the table
@@ -98,6 +118,7 @@ var Tabless = /** @class */ (function () {
         if (!newColumns)
             return;
         var newColumnsArray = [];
+        //Check is newColumns array or no
         if (!Array.isArray(newColumns)) {
             newColumnsArray = [newColumns];
         }
@@ -105,7 +126,7 @@ var Tabless = /** @class */ (function () {
             newColumnsArray = newColumns;
         }
         newColumnsArray.forEach(function (element) {
-            if (element.columnIndex) {
+            if (utilities_1.isColumnConfigValid(element)) {
                 _this.columnsConfig.push(element);
             }
         });

@@ -33,6 +33,8 @@ function generateTableBody(columnsConfig, data, config) {
         }
         //  for loop; calls for every column in table (in specific row)
         columnsConfig.forEach(function (columnConfig) {
+            if (!columnConfig)
+                return;
             var cell = CreatingCells_1.createDataCell(sourceObject, columnConfig);
             row.cells.push(cell);
         });
